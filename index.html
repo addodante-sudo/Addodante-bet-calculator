@@ -129,12 +129,12 @@
     <!-- VIP Monetization Section (Paystack) -->
     <div class="vip-section">
       <h3>👑 Unlock VIP Sporty Accumulators</h3>
-      <p>Skip the generator! Pay GHS 20.00 to instantly receive today's highly researched 50+ odds VIP slip directly to your email.</p>
+      <p>Skip the generator! Pay GHS 2.00 to instantly receive today's highly researched 50+ odds VIP slip directly to your email.</p>
       
       <div class="vip-inputs">
         <input type="email" id="vip-email" placeholder="Enter your email to receive slip" required>
       </div>
-      <button class="btn-vip" onclick="payForVIP()">Pay GHS 20 via Paystack</button>
+      <button class="btn-vip" onclick="payForVIP()">Pay GHS 2 via Paystack</button>
     </div>
 
   </div>
@@ -251,7 +251,7 @@
     // VIP Paystack Checkout
     function payForVIP() {
       const email = document.getElementById('vip-email').value.trim();
-      const VIP_PRICE_GHS = 20; // Set price for VIP predictions
+      const VIP_PRICE_GHS = 2; // Updated to GHS 2
 
       if (!email) {
         alert('Please enter your email to receive the VIP slip.');
