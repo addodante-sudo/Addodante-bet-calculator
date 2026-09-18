@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Addodante Hub | Multi-Bet Odds Calculator</title>
+  <!-- Paystack Inline JS -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #f0fdf4; display: flex; justify-content: center; padding: 20px; margin: 0; color: #1a202c; }
+    
+    .app-container { background: #ffffff; border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 10px 25px rgba(0, 128, 0, 0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    
+    @media (max-width: 650px) {
+      .app-container { grid-template-columns: 1fr; }
+    }
+
+    /* Branding */
+    .header { grid-column: 1 / -1; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 8px; }
+    .logo-circle { width: 60px; height: 60px; background: #16a34a; color: white; font-size: 36px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; }
+    .header h1 { margin: 0; font-size: 1.8rem; color: #166534; letter-spacing: 1px; }
+    .header p { margin: 4px 0 0 0; font-size: 0.9rem; color: #4b5563; }
+
+    /* Forms & Inputs */
+    .section-title { font-size: 1.1rem; color: #15803d; margin-bottom: 12px; border-bottom: 2px solid #bbf7d0; display: inline-block; padding-bottom: 4px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: bold; color: #374151; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.95rem; background: #f9fafb; }
+    input:focus, select:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2); }
+    
+    button { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    .btn-add { background: #16a34a; color: white; margin-top: 8px; }
+    .btn-add:hover { background: #15803d; }
+    
+    /* Betslip Area */
+    .betslip { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+    .match-list { list-style: none; padding: 0; margin: 0 0 16px 0; max-height: 250px; overflow-y: auto; }
+    .match-item { background: white; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .match-info { font-size: 0.85rem; }
+    .match-info strong { display: block; font-size: 0.95rem; color: #1e293b; }
+    .odds-badge { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; }
+    .remove-btn { color: #ef4444; cursor: pointer; font-size: 1.2rem; font-weight: bold; margin-left: 10px; border: none; background: none; padding: 0; width: auto; }
+    
+    /* Totals */
+    .totals-box { background: #1e293b; color: white; padding: 16px; border-radius: 8px; }
+    .totals-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+    .totals-row.grand-total { font-size: 1.2rem; font-weight: bold; color: #4ade80; border-top: 1px dashed #475569; padding-top: 8px; margin-top: 8px; }
+    .stake-input { width: 80px; padding: 4px 8px; margin-left: 10px; border-radius: 4px; border: none; text-align: right; font-weight: bold; }
+
+    /* VIP Paystack Section */
+    .vip-section { grid-column: 1 / -1; background: #fffbeb; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; margin-top: 10px; }
+    .vip-section h3 { margin: 0 0 8px 0; color: #b45309; }
+    .vip-section p { font-size: 0.9rem; color: #92400e; margin-bottom: 16px; }
+    .vip-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .vip-inputs input { width: 250px; }
+    .btn-vip { background: #f59e0b; color: white; width: auto; padding: 12px 30px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3); }
+    .btn-vip:hover { background: #d97706; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Header with Branding -->
+    <div class="header">
+      <div class="logo-circle">A</div>
+      <h1>ADDODANTE HUB</h1>
+      <p>Pro Multi-Bet Odds Generator & Slip Calculator</p>
+    </div>
+
+    <!-- Left Column: Add Match -->
+    <div>
+      <h2 class="section-title">Build Your Slip</h2>
+      
+      <div class="form-group">
+        <label>Home Team</label>
+        <input type="text" id="home-team" placeholder="e.g. Real Madrid">
+      </div>
+      
+      <div class="form-group">
+        <label>Away Team</label>
+        <input type="text" id="away-team" placeholder="e.g. Barcelona">
+      </div>
+      
+      <div class="form-group">
+        <label>Prediction / Market</label>
+        <select id="prediction-market">
+          <option value="Home Win">Home Win (1)</option>
+          <option value="Away Win">Away Win (2)</option>
+          <option value="Draw">Full-Time Draw (X)</option>
+          <option value="Half-Time Draw">Half-Time Draw</option>
+          <option value="Over 2.5 Goals">Over 2.5 Goals</option>
+          <option value="Correct Score">Correct Score (Generates High Odds)</option>
+        </select>
+      </div>
+
+      <button class="btn-add" onclick="generateAndAddMatch()">+ Generate Odds & Add to Slip</button>
+    </div>
+
+    <!-- Right Column: Betslip & Calculator -->
+    <div class="betslip">
+      <h2 class="section-title">Accumulator Slip</h2>
+      
+      <ul class="match-list" id="match-list">
+        <!-- Matches will appear here -->
+      </ul>
+
+      <div class="totals-box">
+        <div class="totals-row">
+          <span>Total Matches:</span>
+          <span id="total-count">0</span>
+        </div>
+        <div class="totals-row">
+          <span>Total Accumulator Odds:</span>
+          <span id="total-odds">1.00</span>
+        </div>
+        <div class="totals-row" style="align-items: center;">
+          <span>Stake Amount (GHS):</span>
+          <input type="number" id="stake" class="stake-input" value="10" min="1" onchange="calculatePayout()" onkeyup="calculatePayout()">
+        </div>
+        <div class="totals-row grand-total">
+          <span>Potential Est. Payout:</span>
+          <span id="potential-payout">GHS 0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP Monetization Section (Paystack) -->
+    <div class="vip-section">
+      <h3>👑 Unlock VIP Sporty Accumulators</h3>
+      <p>Skip the generator! Pay GHS 20.00 to instantly receive today's highly researched 50+ odds VIP slip directly to your email.</p>
+      
+      <div class="vip-inputs">
+        <input type="email" id="vip-email" placeholder="Enter your email to receive slip" required>
+      </div>
+      <button class="btn-vip" onclick="payForVIP()">Pay GHS 20 via Paystack</button>
+    </div>
+
+  </div>
+
+  <script>
+    // App State
+    let slip = [];
+    
+    // YOUR TEST PUBLIC KEY
+    const PAYSTACK_PUBLIC_KEY = 'pk_test_e6b5b083a6e98d434bd33ec8ed7efbc699d66297';
+
+    // Logic to generate realistic simulated odds
+    function generateOdds(market) {
+      let min, max;
+      
+      switch(market) {
+        case 'Home Win':
+        case 'Away Win':
+          min = 1.30; max = 3.50; break;
+        case 'Draw':
+          min = 2.80; max = 4.20; break;
+        case 'Half-Time Draw':
+          min = 1.90; max = 2.40; break;
+        case 'Over 2.5 Goals':
+          min = 1.60; max = 2.20; break;
+        case 'Correct Score':
+          min = 6.00; max = 15.00; break; // Correct score yields massive odds
+        default:
+          min = 1.10; max = 2.00;
+      }
+      
+      // Generate random odds between min and max
+      const odds = (Math.random() * (max - min) + min).toFixed(2);
+      return parseFloat(odds);
+    }
+
+    function generateAndAddMatch() {
+      const homeTeam = document.getElementById('home-team').value.trim();
+      const awayTeam = document.getElementById('away-team').value.trim();
+      const market = document.getElementById('prediction-market').value;
+
+      if (!homeTeam || !awayTeam) {
+        alert("Please enter both Home and Away teams!");
+        return;
+      }
+
+      // Automatically generate odds based on the market selected
+      const odds = generateOdds(market);
+      const matchId = Date.now();
+
+      slip.push({
+        id: matchId,
+        fixture: `${homeTeam} vs ${awayTeam}`,
+        market: market,
+        odds: odds
+      });
+
+      // Clear inputs for next match
+      document.getElementById('home-team').value = '';
+      document.getElementById('away-team').value = '';
+
+      updateSlipUI();
+    }
+
+    function removeMatch(id) {
+      slip = slip.filter(match => match.id !== id);
+      updateSlipUI();
+    }
+
+    function updateSlipUI() {
+      const listElement = document.getElementById('match-list');
+      listElement.innerHTML = '';
+      
+      let totalOddsMultiplier = 1.00;
+
+      slip.forEach(match => {
+        totalOddsMultiplier *= match.odds;
+
+        const li = document.createElement('li');
+        li.className = 'match-item';
+        li.innerHTML = `
+          <div class="match-info">
+            <strong>${match.fixture}</strong>
+            Prediction: ${match.market}
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="odds-badge">${match.odds.toFixed(2)}</span>
+            <button class="remove-btn" onclick="removeMatch(${match.id})">×</button>
+          </div>
+        `;
+        listElement.appendChild(li);
+      });
+
+      if (slip.length === 0) {
+        totalOddsMultiplier = 1.00;
+        listElement.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.9rem;">No matches added yet.</p>';
+      }
+
+      document.getElementById('total-count').innerText = slip.length;
+      document.getElementById('total-odds').innerText = totalOddsMultiplier.toFixed(2);
+      
+      calculatePayout();
+    }
+
+    function calculatePayout() {
+      const totalOddsText = document.getElementById('total-odds').innerText;
+      const totalOdds = parseFloat(totalOddsText);
+      const stakeAmount = parseFloat(document.getElementById('stake').value) || 0;
+      
+      const potentialPayout = totalOdds * stakeAmount;
+      document.getElementById('potential-payout').innerText = 'GHS ' + potentialPayout.toFixed(2);
+    }
+
+    // VIP Paystack Checkout
+    function payForVIP() {
+      const email = document.getElementById('vip-email').value.trim();
+      const VIP_PRICE_GHS = 20; // Set price for VIP predictions
+
+      if (!email) {
+        alert('Please enter your email to receive the VIP slip.');
+        return;
+      }
+
+      let handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: email,
+        currency: 'GHS',
+        amount: VIP_PRICE_GHS * 100, // Paystack uses pesewas (multiply by 100)
+        ref: 'VIP_' + Math.floor((Math.random() * 1000000000) + 1),
+        onClose: function() {
+          alert('Checkout window closed. Please complete payment to get VIP access.');
+        },
+        callback: function(response) {
+          alert('Payment successful! Your Reference ID is: ' + response.reference + '\n\nThe VIP 50+ Odds Accumulator has been sent to ' + email);
+          document.getElementById('vip-email').value = '';
+        }
+      });
+
+      handler.openIframe();
+    }
+
+    // Init UI
+    updateSlipUI();
+  </script>
+</body>
+</html>
