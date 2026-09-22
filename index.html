@@ -7,51 +7,96 @@
   <!-- Paystack Inline JS -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #f0fdf4; display: flex; justify-content: center; padding: 20px; margin: 0; color: #1a202c; }
+    :root {
+      --bg-body: #f0fdf4;
+      --bg-card: #ffffff;
+      --text-main: #1a202c;
+      --text-sub: #4b5563;
+      --border-color: #e2e8f0;
+      --input-bg: #f9fafb;
+      --input-border: #d1d5db;
+      --betslip-bg: #f8fafc;
+      --item-bg: #ffffff;
+      --totals-bg: #1e293b;
+      --vip-bg: #fffbeb;
+      --vip-border: #fde68a;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: #334155;
+      --input-bg: #0f172a;
+      --input-border: #475569;
+      --betslip-bg: #0f172a;
+      --item-bg: #1e293b;
+      --totals-bg: #090d16;
+      --vip-bg: #271e05;
+      --vip-border: #78350f;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
+    body { background: var(--bg-body); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--text-main); }
     
-    .app-container { background: #ffffff; border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 10px 25px rgba(0, 128, 0, 0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .app-container { background: var(--bg-card); border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); display: grid; grid-template-columns: 1fr 1fr; gap: 24px; position: relative; }
     
     @media (max-width: 650px) {
       .app-container { grid-template-columns: 1fr; }
     }
 
+    /* Dark Mode Toggle Button */
+    .theme-toggle-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: auto;
+    }
+
     /* Branding */
-    .header { grid-column: 1 / -1; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 8px; }
+    .header { grid-column: 1 / -1; text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 8px; margin-top: 10px; }
     .logo-circle { width: 60px; height: 60px; background: #16a34a; color: white; font-size: 36px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; }
-    .header h1 { margin: 0; font-size: 1.8rem; color: #166534; letter-spacing: 1px; }
-    .header p { margin: 4px 0 0 0; font-size: 0.9rem; color: #4b5563; }
+    .header h1 { margin: 0; font-size: 1.8rem; color: #16a34a; letter-spacing: 1px; }
+    .header p { margin: 4px 0 0 0; font-size: 0.9rem; color: var(--text-sub); }
 
     /* Forms & Inputs */
-    .section-title { font-size: 1.1rem; color: #15803d; margin-bottom: 12px; border-bottom: 2px solid #bbf7d0; display: inline-block; padding-bottom: 4px; }
+    .section-title { font-size: 1.1rem; color: #16a34a; margin-bottom: 12px; border-bottom: 2px solid #bbf7d0; display: inline-block; padding-bottom: 4px; }
     .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: bold; color: #374151; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.95rem; background: #f9fafb; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: bold; color: var(--text-sub); }
+    input, select { width: 100%; padding: 10px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 0.95rem; background: var(--input-bg); color: var(--text-main); }
     input:focus, select:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2); }
     
-    button { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    button { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
     .btn-add { background: #16a34a; color: white; margin-top: 8px; }
     .btn-add:hover { background: #15803d; }
     
     /* Betslip Area */
-    .betslip { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+    .betslip { background: var(--betslip-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; }
     .match-list { list-style: none; padding: 0; margin: 0 0 16px 0; max-height: 250px; overflow-y: auto; }
-    .match-item { background: white; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .match-info { font-size: 0.85rem; }
-    .match-info strong { display: block; font-size: 0.95rem; color: #1e293b; }
+    .match-item { background: var(--item-bg); border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .match-info { font-size: 0.85rem; color: var(--text-sub); }
+    .match-info strong { display: block; font-size: 0.95rem; color: var(--text-main); }
     .odds-badge { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; }
     .remove-btn { color: #ef4444; cursor: pointer; font-size: 1.2rem; font-weight: bold; margin-left: 10px; border: none; background: none; padding: 0; width: auto; }
     
     /* Totals */
-    .totals-box { background: #1e293b; color: white; padding: 16px; border-radius: 8px; }
+    .totals-box { background: var(--totals-bg); color: white; padding: 16px; border-radius: 8px; }
     .totals-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
     .totals-row.grand-total { font-size: 1.2rem; font-weight: bold; color: #4ade80; border-top: 1px dashed #475569; padding-top: 8px; margin-top: 8px; }
-    .stake-input { width: 80px; padding: 4px 8px; margin-left: 10px; border-radius: 4px; border: none; text-align: right; font-weight: bold; }
+    .stake-input { width: 80px; padding: 4px 8px; margin-left: 10px; border-radius: 4px; border: none; text-align: right; font-weight: bold; background: #ffffff; color: #1a202c; }
 
     /* VIP Paystack Section */
-    .vip-section { grid-column: 1 / -1; background: #fffbeb; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; margin-top: 10px; }
-    .vip-section h3 { margin: 0 0 8px 0; color: #b45309; }
-    .vip-section p { font-size: 0.9rem; color: #92400e; margin-bottom: 16px; }
+    .vip-section { grid-column: 1 / -1; background: var(--vip-bg); border: 1px solid var(--vip-border); padding: 20px; border-radius: 8px; text-align: center; margin-top: 10px; }
+    .vip-section h3 { margin: 0 0 8px 0; color: #f59e0b; }
+    .vip-section p { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 16px; }
     .vip-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
     .vip-inputs input { width: 250px; }
     .btn-vip { background: #f59e0b; color: white; width: auto; padding: 12px 30px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3); }
@@ -61,6 +106,7 @@
 <body>
 
   <div class="app-container">
+    <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
     
     <!-- Header with Branding -->
     <div class="header">
@@ -140,35 +186,35 @@
   </div>
 
   <script>
-    // App State
     let slip = [];
-    
-    // YOUR TEST PUBLIC KEY
     const PAYSTACK_PUBLIC_KEY = 'pk_test_e6b5b083a6e98d434bd33ec8ed7efbc699d66297';
 
-    // Logic to generate realistic simulated odds
+    // Theme Management
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', targetTheme);
+      localStorage.setItem('theme', targetTheme);
+      document.getElementById('theme-btn').innerText = targetTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    // Load Saved Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-btn').innerText = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
     function generateOdds(market) {
       let min, max;
-      
       switch(market) {
         case 'Home Win':
-        case 'Away Win':
-          min = 1.30; max = 3.50; break;
-        case 'Draw':
-          min = 2.80; max = 4.20; break;
-        case 'Half-Time Draw':
-          min = 1.90; max = 2.40; break;
-        case 'Over 2.5 Goals':
-          min = 1.60; max = 2.20; break;
-        case 'Correct Score':
-          min = 6.00; max = 15.00; break; // Correct score yields massive odds
-        default:
-          min = 1.10; max = 2.00;
+        case 'Away Win': min = 1.30; max = 3.50; break;
+        case 'Draw': min = 2.80; max = 4.20; break;
+        case 'Half-Time Draw': min = 1.90; max = 2.40; break;
+        case 'Over 2.5 Goals': min = 1.60; max = 2.20; break;
+        case 'Correct Score': min = 6.00; max = 15.00; break;
+        default: min = 1.10; max = 2.00;
       }
-      
-      // Generate random odds between min and max
-      const odds = (Math.random() * (max - min) + min).toFixed(2);
-      return parseFloat(odds);
+      return parseFloat((Math.random() * (max - min) + min).toFixed(2));
     }
 
     function generateAndAddMatch() {
@@ -181,21 +227,11 @@
         return;
       }
 
-      // Automatically generate odds based on the market selected
       const odds = generateOdds(market);
-      const matchId = Date.now();
+      slip.push({ id: Date.now(), fixture: `${homeTeam} vs ${awayTeam}`, market, odds });
 
-      slip.push({
-        id: matchId,
-        fixture: `${homeTeam} vs ${awayTeam}`,
-        market: market,
-        odds: odds
-      });
-
-      // Clear inputs for next match
       document.getElementById('home-team').value = '';
       document.getElementById('away-team').value = '';
-
       updateSlipUI();
     }
 
@@ -207,12 +243,10 @@
     function updateSlipUI() {
       const listElement = document.getElementById('match-list');
       listElement.innerHTML = '';
-      
       let totalOddsMultiplier = 1.00;
 
       slip.forEach(match => {
         totalOddsMultiplier *= match.odds;
-
         const li = document.createElement('li');
         li.className = 'match-item';
         li.innerHTML = `
@@ -230,29 +264,22 @@
 
       if (slip.length === 0) {
         totalOddsMultiplier = 1.00;
-        listElement.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.9rem;">No matches added yet.</p>';
+        listElement.innerHTML = '<p style="text-align:center; color:var(--text-sub); font-size:0.9rem;">No matches added yet.</p>';
       }
 
       document.getElementById('total-count').innerText = slip.length;
       document.getElementById('total-odds').innerText = totalOddsMultiplier.toFixed(2);
-      
       calculatePayout();
     }
 
     function calculatePayout() {
-      const totalOddsText = document.getElementById('total-odds').innerText;
-      const totalOdds = parseFloat(totalOddsText);
+      const totalOdds = parseFloat(document.getElementById('total-odds').innerText);
       const stakeAmount = parseFloat(document.getElementById('stake').value) || 0;
-      
-      const potentialPayout = totalOdds * stakeAmount;
-      document.getElementById('potential-payout').innerText = 'GHS ' + potentialPayout.toFixed(2);
+      document.getElementById('potential-payout').innerText = 'GHS ' + (totalOdds * stakeAmount).toFixed(2);
     }
 
-    // VIP Paystack Checkout
     function payForVIP() {
       const email = document.getElementById('vip-email').value.trim();
-      const VIP_PRICE_GHS = 2; // Updated to GHS 2
-
       if (!email) {
         alert('Please enter your email to receive the VIP slip.');
         return;
@@ -262,21 +289,17 @@
         key: PAYSTACK_PUBLIC_KEY,
         email: email,
         currency: 'GHS',
-        amount: VIP_PRICE_GHS * 100, // Paystack uses pesewas (multiply by 100)
+        amount: 2 * 100,
         ref: 'VIP_' + Math.floor((Math.random() * 1000000000) + 1),
-        onClose: function() {
-          alert('Checkout window closed. Please complete payment to get VIP access.');
-        },
+        onClose: function() { alert('Checkout window closed.'); },
         callback: function(response) {
-          alert('Payment successful! Your Reference ID is: ' + response.reference + '\n\nThe VIP 50+ Odds Accumulator has been sent to ' + email);
+          alert('Payment successful! Ref: ' + response.reference + '\nVIP Slip sent to ' + email);
           document.getElementById('vip-email').value = '';
         }
       });
-
       handler.openIframe();
     }
 
-    // Init UI
     updateSlipUI();
   </script>
 </body>
